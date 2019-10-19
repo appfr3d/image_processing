@@ -1,6 +1,8 @@
 import numpy as np 
 from PIL import Image
 
+# TODO: use the convolve function from utils.py instead
+
 image_name = 'image_0'
 picture = Image.open('images/original/' + image_name + '.jpg')
 array = np.array(picture)
