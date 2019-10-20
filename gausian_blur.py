@@ -4,7 +4,7 @@ from utils import convolve, get_image, save_image
 image_name = 'image_0'
 image = get_image('images/original/' + image_name + '.jpg')
 
-# TODO: implement real gausien kernel
+# TODO: implement a function that creates a real gausien kernel
 # https://towardsdatascience.com/canny-edge-detection-step-by-step-in-python-computer-vision-b49c3a2d8123
 
 ''' 

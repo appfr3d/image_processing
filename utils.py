@@ -1,6 +1,8 @@
 import numpy as np
 from PIL import Image
 
+
+# TODO: make it convolve both arrays of shape [H, W, 3] and [H, W]
 def convolve(im, kernel):
 	''' 
 	A function that convolves im with kernel. The edges outside the image is handled as 0
@@ -34,11 +36,27 @@ def convolve(im, kernel):
 
 	return convolved
 
-def get_image(loaction):
+def get_image(location):
+	'''
+	Returns the image at the specified location as an np.array
+
+	Args: 
+		location: string
+
+	Returns: 
+		np.array of shape [H, W, 3]
+	'''
 	image = Image.open(location)
 	return np.array(image)
 
 def save_image(im, location):
+	'''
+	Saves the provided image at the given location
+
+	Args:
+		im: np.array
+		location: string
+	'''
 	image = Image.fromarray(im.astype('uint8'))
 	image.show()
 	image.save(location)

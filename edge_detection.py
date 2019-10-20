@@ -1,42 +1,64 @@
 import numpy as np 
-from PIL import Image
+from utils import convolve, get_image, save_image
+from grayscale import grayscale_mean
 
-# TODO: use the convolve function from utils.py instead
+def edge_detection(im):
+	'''
+	Function that convolves im with vertial and horizontal sobel filters
+	to find edges in a photo
 
-image_name = 'image_0'
-picture = Image.open('images/original/' + image_name + '.jpg')
-array = np.array(picture)
+	Args:
+		im: np.array of shape [H, W, 3]
+	'''
+	image = grayscale_mean(im)
 
-edge = np.zeros(array.shape)
+	# Using vertical and horizontal Sobel kernels 
+	sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+	sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
 
-print(array.shape) # (rows, columns, colors)
+	edge_x = convolve(image, sobel_x)
+	edge_y = convolve(image, sobel_y)
+	edge = np.round(np.sqrt(np.power(edge_x, 2) + np.power(edge_y, 2)))
 
-filter_size = 3 # must be odd
-filter_value = -1 
+	return edge, edge_x, edge_y
 
-# the range to loop over for our filter
-start = int(-((filter_size - 1) / 2))	
-end   = int(((filter_size - 1) / 2) + 1)
 
-gaus = np.full((filter_size, filter_size), filter_value)
-mid = int((filter_size-1)/2)
-gaus[mid][mid] = filter_size*filter_size - 1
 
-for row in range(array.shape[0]): # rows
-	for col in range(array.shape[1]): # columns
-		for color in range(array.shape[2]): # colors
-			value = 0 # the total value of pixels
-			num_values = 0 # will most times be filter_size^2, but not on the edges
-			for r in range(start, end):
-				for c in range(start, end):
-					if row + r > 0 and row + r < array.shape[0] and col + c > 0 and col + c < array.shape[1]:
-						# we are inside the bounds
-						value += gaus[r][c]*array[row+r][col+c][color]
-						num_values += 1
+# Convert to grayscale
+# r, b, g = original_image[:,:,0], original_image[:,:,1], original_image[:,:,2]
 
-			edge[row][col][color] = value/num_values # mean of the values
+# the shape is being manipulated here...
+# image = np.round((r+b+g)*(1/3))
 
-edge_image = Image.fromarray(edge.astype('uint8'))
-edge_image.show()
+# make the image to a grayscale
+# image = grayscale_mean(original_image)
+# image = np.zeros(original_image.shape)
+# for row, col in np.ndindex(original_image.shape[:-1]): # iterate over row and col, not color
+# 	mean_val = np.mean(original_image[row, col])
+# 	image[row, col, :] = np.full(original_image.shape[2], mean_val)
 
-edge_image.save('images/edge_detection/' + image_name +  '_edge_detection_size_' + str(filter_size) + '.jpg')
+# Using vertical and horizontal Sobel kernels 
+# sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+# sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+
+# edge_x = convolve(image, sobel_x)
+# edge_y = convolve(image, sobel_y)
+# edge = np.round(np.sqrt(np.power(edge_x, 2) + np.power(edge_y, 2)))
+
+
+
+if __name__ == "__main__":
+	image_name = 'image_0'
+	original_image = get_image('images/original/' + image_name + '.jpg')
+
+	edge, edge_x, edge_y = edge_detection(original_image)
+
+	save_location_x = 'images/edge_detection/' + image_name +  '_edge_detection_x_.jpg'
+	save_image(edge_x, save_location_x)
+
+	save_location_y = 'images/edge_detection/' + image_name +  '_edge_detection_y_.jpg'
+	save_image(edge_y, save_location_y)
+
+	save_location = 'images/edge_detection/' + image_name +  '_edge_detection_.jpg'
+	save_image(edge, save_location)
+
