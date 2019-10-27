@@ -20,7 +20,7 @@ def gausian_kernel(size, sigma=1):
 	return np.exp(-((x**2 + y**2) / (2.0 * sigma**2))) * normal
 
 
-def gausian_blur(im, kernel=gausian_kernel(5)):
+def gausian_blur(im, kernel_size=5, kernel_sigma=1.0):
 	''' 
 	A function that convolves im with kernel.
 	
@@ -31,6 +31,7 @@ def gausian_blur(im, kernel=gausian_kernel(5)):
 	Returns:
 		np.array of shape [H, W, 3]
 	'''
+	kernel = gausian_kernel(kernel_size, kernel_sigma)
 	return convolve(im, kernel)
 
 
